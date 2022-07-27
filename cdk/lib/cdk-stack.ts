@@ -1,10 +1,10 @@
-import * as cdk from '@aws-cdk/core';
+import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as codebuild from 'aws-cdk-lib/aws-codebuild';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as dotenv from 'dotenv';
-import * as cloudfront from '@aws-cdk/aws-cloudfront';
-import * as s3 from '@aws-cdk/aws-s3';
-import * as deploy from '@aws-cdk/aws-s3-deployment';
-import * as codebuild from '@aws-cdk/aws-codebuild';
-import { Role } from '@aws-cdk/aws-iam';
 
 // dotenv Must be the first expression
 dotenv.config();
@@ -21,11 +21,11 @@ const S3_BUCKET_NAME = `${environment}-maintenance-dapp`;
 const CD_ROLE_ARN = <string>process.env.SINGULARITYNET_CD_ROLE_ARN;
 
 // eslint-disable-next-line import/prefer-default-export
-export class MaintenancePipeLineStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: any) {
+export class MaintenancePipeLineStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const role = Role.fromRoleArn(this, 'AccessPolicy', CD_ROLE_ARN);
+    const role = iam.Role.fromRoleArn(this, 'CDRole', CD_ROLE_ARN);
 
     const projectSource = codebuild.Source.gitHub({
       owner: githubOwner,
@@ -35,8 +35,14 @@ export class MaintenancePipeLineStack extends cdk.Stack {
       cloneDepth: 25,
       webhook: true,
       webhookTriggersBatchBuild: false,
-      webhookFilters:
-      [codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH).andBranchIs(githubBranch)],
+      webhookFilters: [
+        codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH).andBranchIs(
+          githubBranch
+        ),
+        codebuild.FilterGroup.inEventOf(
+          codebuild.EventAction.PULL_REQUEST_MERGED
+        ).andBranchIs(githubBranch),
+      ],
     });
 
     // eslint-disable-next-line no-new
@@ -65,7 +71,6 @@ export class MaintenancePipeLineStack extends cdk.Stack {
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'index.html',
       publicReadAccess: true,
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
     const siteDistribution = new cloudfront.CloudFrontWebDistribution(this, `${environment}-maintenance-dapp-distribution`, {
@@ -82,12 +87,9 @@ export class MaintenancePipeLineStack extends cdk.Stack {
     });
 
     // eslint-disable-next-line no-new
-    new deploy.BucketDeployment(this, `${environment}-maintenance-dapp-deployment`, {
-      sources: [deploy.Source.asset('../build')],
-      destinationBucket: siteBucket,
-      distribution: siteDistribution,
-      distributionPaths: ['/*'],
-      prune: true,
+    new CfnOutput(this, `${environment}-maintenance-dapp-cf`, {
+      value: siteDistribution.distributionDomainName,
+      exportName: `${environment}-maintenance-dapp-cf`,
     });
   }
 }
