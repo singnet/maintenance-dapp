@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-import * as cdk from 'aws-cdk-lib';
 import * as dotenv from 'dotenv';
 import { MaintenancePipeLineStack } from '../lib/cdk-stack';
+import * as cdk from 'aws-cdk-lib';
 
 dotenv.config();
 
