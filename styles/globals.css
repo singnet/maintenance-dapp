@@ -1,0 +1,68 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Muli Fonts */
+
+@font-face {
+  font-family: "MuliLight";
+  src: url('../public/fonts/muli/Muli-Light.ttf');
+  font-weight: 200
+}
+
+@font-face {
+  font-family: "MuliRegular";
+  src: url('../public/fonts/muli/Muli-Regular.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "MuliSemiBold";
+  src: url('../public/fonts/muli/Mulish-SemiBold.ttf');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "MuliBold";
+  src: url('../public/fonts/muli/Mulish-Bold.ttf');
+  font-weight: bold;
+}
+
+/* Montserrat Fonts */
+
+@font-face {
+  font-family: "MontserratLight";
+  src: url('../public/fonts/montserrat/Montserrat-Light.ttf');
+  font-weight: 200
+}
+
+@font-face {
+  font-family: "MontserratRegular";
+  src: url('../public/fonts/montserrat/Montserrat-Regular.ttf');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "MontserratSemiBold";
+  src: url('../public/fonts/montserrat/Montserrat-SemiBold.ttf');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "MontserratBold";
+  src: url('../public/fonts/montserrat/Montserrat-Bold.ttf');
+  font-weight: bold;
+}
