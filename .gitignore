@@ -45,3 +45,7 @@ cdk/.env.development.local
 cdk/.env.test.local
 cdk/.env.production.local
 build.bat
+cdk/bin/cdk.d.ts
+cdk/bin/cdk.js
+cdk/lib/cdk-stack.d.ts
+cdk/lib/cdk-stack.js
