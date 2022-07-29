@@ -4,6 +4,7 @@ import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as dotenv from 'dotenv';
 
 // dotenv Must be the first expression
@@ -75,23 +76,21 @@ export class MaintenancePipeLineStack extends Stack {
 
     const siteBucket = new s3.Bucket(this, `${environment}-maintenance-dapp`, {
       bucketName: S3_BUCKET_NAME,
-      websiteIndexDocument: 'index.html',
-      websiteErrorDocument: 'index.html',
       publicReadAccess: true,
     });
 
-    const siteDistribution = new cloudfront.CloudFrontWebDistribution(this, `${environment}-maintenance-dapp-distribution`, {
-      defaultRootObject: 'index.html',
-      originConfigs: [
-        {
-          s3OriginSource: {
-            s3BucketSource: siteBucket,
-          },
-          behaviors: [{ isDefaultBehavior: true }],
+
+    const siteDistribution = new cloudfront.Distribution(
+      this,
+      "static-dist",
+      {
+        defaultBehavior: {
+          origin: new origins.S3Origin(siteBucket),
+          viewerProtocolPolicy:
+            cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         },
-      ],
-      viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-    });
+      }
+    );
 
     // eslint-disable-next-line no-new
     new CfnOutput(this, `${environment}-maintenance-dapp-cf`, {
