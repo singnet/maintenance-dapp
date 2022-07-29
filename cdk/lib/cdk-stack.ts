@@ -37,9 +37,6 @@ export class MaintenancePipeLineStack extends Stack {
       webhook: true,
       webhookTriggersBatchBuild: false,
       webhookFilters: [
-        codebuild.FilterGroup.inEventOf(codebuild.EventAction.PUSH).andBranchIs(
-          githubBranch
-        ),
         codebuild.FilterGroup.inEventOf(
           codebuild.EventAction.PULL_REQUEST_MERGED
         ).andBranchIs(githubBranch),
