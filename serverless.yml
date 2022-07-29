@@ -7,6 +7,6 @@ maintenancedapp:
     publicDirectoryCache:
       value: public, max-age=604800
       test: /\.(gif|jpe?g|png|txt|xml)$/i
-    domain: ["${file(./serverless-config.json):SUBDOMAIN}", "${file(./serverless-config.json):DOMAIN}"] # [ sub-domain, domain ]
-    bucketName: ${file(./serverless-config.json):BUCKETNAME}
-    
+    bucketName: ""
+    cloudfront:
+      distributionId: ""
