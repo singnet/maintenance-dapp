@@ -56,11 +56,18 @@ export class MaintenancePipeLineStack extends Stack {
       buildSpec: codebuild.BuildSpec.fromObject({
         version: '0.2',
         phases: {
-          pre_build: {
-            commands: ['node --version', `aws s3 sync s3://${configBucket}/${appConfigsFolder}/app .`, 'npm install'],
-          },
           build: {
-            commands: ['npm run build', 'cd cdk', `aws s3 sync s3://${configBucket}/${appConfigsFolder}/cdk .`, 'npm install', 'npm run deploy'],
+            commands: [
+              'cd cdk',
+              `aws s3 sync s3://${configBucket}/${appConfigsFolder}/cdk .`,
+              'npm install',
+              'npm run deploy',
+              'cd ..',
+              'npm install',
+              'npm install -g serverless',
+              `aws s3 sync s3://${configBucket}/${appConfigsFolder}/app .`,
+              'serverless',
+            ],
           },
         },
       }),
